@@ -21,36 +21,32 @@ module ::Guard
     end
 
     def run_all
-      invoke_java
+      project_name = @options[:project_name]
+      notify project_name, "Build and run all", :pending
+      result = do_shell(all_command)
+      result_description = "#{project_name} build results"
+      notify result_description, "Build #{result.to_s.capitalize}", result # Notify of success or failure
     end
 
-    def run_on_changes(paths)
-      invoke_java(paths)
+    def run_on_changes(classes)
+      run_focused_tests(classes)
     end
 
     def stop
     end
 
-    def invoke_java(paths=[])
-      no_file = (paths.size == 0)
+    def run_focused_tests(classes)
       project_name = @options[:project_name]
-      path = no_file ? project_name : paths[0]
-      result_description = ''
+      klass = classes[0]
 
-      if no_file
-        notify project_name, "Build and run all", :pending
-        result = do_shell(all_command)
-        result_description = "#{project_name} build results"
-      else
-        notify "Running tests in #{path}", "#{project_name} file change detected", :pending  # notify any interested listeners
-        result = do_shell(focused_command)
-        result = test_file(path) unless result == :failed
-        result_description = "#{project_name}: test run for #{path}"
-      end
+      notify "Running tests in #{klass}", "#{project_name} file change detected", :pending  # notify any interested listeners
+      result = do_shell(focused_command)
+      result = run_test_class(klass) unless result == :failed
+      result_description = "#{project_name}: test run for #{klass}"
 
       notify result_description, "Build #{result.to_s.capitalize}", result # Notify of success or failure
 
-      if result == :success && @options[:all_after_pass] && !no_file
+      if result == :success && @options[:all_after_pass]
         run_all
       end
       nil
@@ -80,8 +76,7 @@ module ::Guard
     end
 
 
-    def test_file(path)
-      klass = path.gsub('src/', '').gsub('/', '.').gsub('.java', '')
+    def run_test_class(klass)
       test_command = "java -cp #{options[:classpath]} #{options[:junit_runner_class]} #{klass}"
       puts test_command
       do_shell test_command
