@@ -104,7 +104,7 @@ guard :java,  :project_name   => 'Search SDK',
               :all_after_pass => false,
               :focused_cli    => 'ant guard-debug',
               :all_cli        => 'ant clean debug',
-              :classpath      => "#{android_sdk_dir}:./bin/classes.jar:./libs/*:/usr/share/java/junit.jar" do
+              :classpath      => "/bin/classes.jar:./libs/*:/usr/share/java/junit.jar:#{android_sdk_dir}/android-10/*" do
 
   ignore(%r{^src/com/infospace/some_project/BuildTimeUpdatedFile.java}) # Build-time code-gen
 
@@ -118,6 +118,10 @@ guard :java,  :project_name   => 'Search SDK',
   } # when source files change, run the test for that file
 end
 ```
+
+*note: The android jar path must go after the junit.jar path in the classpath, or you will get an exception about ```no method "main"``
+and some kind of Stub message.  Android only stubs out the JUNitCore runner logic, and if the android jar is placed earlier in the path,
+it won't be able to run any tests.*
 
 #### Latency
 In the case where many files are changing close together (e.g., saving a test file and saving the class under test), you can tell

@@ -79,7 +79,7 @@ module ::Guard
 
 
     def run_test_class(klass)
-      test_command = "java -cp #{options[:classpath]} #{options[:junit_runner_class]} #{klass}"
+      test_command = "java -cp #{options[:classpath]} #{options[:test_runner_class]} #{klass}"
       puts test_command
       do_shell test_command
     end
