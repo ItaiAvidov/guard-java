@@ -4,9 +4,15 @@ guard :java,  :project_name   => 'My Java Project',
               :all_cli        => 'ant package-and-test',  # (required) command-line to run that executes the "build and run all tests" concept
               :classpath      => './bin/classes.jar:./libs/*:/usr/share/java/junit.jar' # (required) don't forget junit and your own jars here
             # :all_on_start   => true                     # run all on startup of guard
-            # junit_runner_class => 'org.junit.runner.JUnitCore' # just in case you're using junit 3 or something other than 4
+            # test_runner_class => 'org.junit.runner.JUnitCore' # just in case you're using junit 3 or something other than 4
   do
 
-  watch (%r{^tests/src/*/(.+)\.java$})  # test file changes
-  watch(%r{^src/*/(.+)\.java$}) { |m| "tests/src/#{m[1]}Test.java" } # when source files change, run the test for that file
+  watch (%r{^src/test/java/*/(.+)\.java$}) { |m| ::Guard::JavaTranslator.filename_to_classname(m[0], 'src/test/java/') }  # test file changes
+
+  watch(%r{^src/main/java/*/(.+)\.java$}) { |m|
+     test_filename = "tests/src/#{m[1]}Test.java"
+     ::Guard::JavaTranslator.filename_to_classname(test_filename)
+   } # when source files change, run the test for that file
+
+  # ignore(path) will ignore files that change automatically, such as generated code filesjt
 end

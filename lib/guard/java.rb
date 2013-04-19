@@ -7,16 +7,18 @@ module ::Guard
       @options = {
         :all_after_pass     => true,
         :all_on_start       => true,
-        :junit_runner_class => 'org.junit.runner.JUnitCore',
+        :test_runner_class  => 'org.junit.runner.JUnitCore',
         :project_name       => 'Java Project',
-        :focused_cli        => '',
-        :all_cli            => '',
-        :classpath          => ''
+        :focused_cli        => nil,
+        :all_cli            => nil,
+        :classpath          => '.'
       }.merge(options)
     end
 
     def start
       UI.info 'Guard::Java is running'
+      raise ArgumentError, ":focused_cli and :all_cli options must be set" if @options[:focused_cli].nil? || @options[:all_cli].nil?
+
       run_all if @options[:all_on_start]
     end
 
