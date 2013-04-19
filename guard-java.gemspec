@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Tony C. Heupel']
   s.email       = ['tony@heupel.net']
-  s.homepage    = 'http://rubygems.org/gems/guard-java'
+  s.homepage    = 'http://github.com/infospace/guard-java'
   s.summary     = 'Guard gem for Java'
   s.description = 'Guard::Java automatically run your unit tests when you save files (much like Eclipse\'s Build on Save'
   s.licenses    = 'MIT'
