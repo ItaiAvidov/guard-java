@@ -11,6 +11,7 @@ Gem::Specification.new do |s|
   s.homepage    = 'http://rubygems.org/gems/guard-java'
   s.summary     = 'Guard gem for Java'
   s.description = 'Guard::Java automatically run your unit tests when you save files (much like Eclipse\'s Build on Save'
+  s.licenses    = 'MIT'
 
   s.required_rubygems_version = '>= 1.3.6'
   s.rubyforge_project         = 'guard-rspec'
