@@ -119,8 +119,8 @@ guard :java,  :project_name   => 'Search SDK',
 end
 ```
 
-*note: The android jar path must go after the junit.jar path in the classpath, or you will get an exception about ```no method "main"``
-and some kind of Stub message.  Android only stubs out the JUNitCore runner logic, and if the android jar is placed earlier in the path,
+*note: The android jar path must go after the junit.jar path in the classpath, or you will get an exception about ```no method "main"```
+and method Stub message.  Android only stubs out the JUnitCore runner logic, and if the android jar is placed earlier in the path,
 it won't be able to run any tests.*
 
 #### Latency
