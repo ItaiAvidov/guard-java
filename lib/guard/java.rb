@@ -5,13 +5,14 @@ module ::Guard
     def initialize(watchers=[], options={})
       super
       @options = {
-        :all_after_pass     => true,
-        :all_on_start       => true,
-        :test_runner_class  => 'org.junit.runner.JUnitCore',
-        :project_name       => 'Java Project',
-        :focused_cli        => nil,
-        :all_cli            => nil,
-        :classpath          => '.'
+        :all_after_pass          => true,
+        :all_on_start            => true,
+        :focused_after_compile   => true,
+        :test_runner_class       => 'org.junit.runner.JUnitCore',
+        :project_name            => 'Java Project',
+        :focused_cli             => nil,
+        :all_cli                 => nil,
+        :classpath               => '.'
       }.merge(options)
     end
 
@@ -31,19 +32,13 @@ module ::Guard
     end
 
     def run_on_changes(classes)
-      run_focused_tests(classes)
-    end
-
-    def stop
-    end
-
-    def run_focused_tests(classes)
       project_name = @options[:project_name]
       klass = classes[0]
 
-      notify "Running tests in #{klass}", "#{project_name} file change detected", :pending  # notify any interested listeners
-      result = do_shell(focused_command)
-      result = run_test_class(klass) unless result == :failed
+      result = compile(project_name, klass)
+
+      result = run_focused_tests(project_name, klass) if result != :failed && @options[:focused_after_compile]
+
       result_description = "#{project_name}: test run for #{klass}"
 
       notify result_description, "Build #{result.to_s.capitalize}", result # Notify of success or failure
@@ -52,6 +47,18 @@ module ::Guard
         run_all
       end
       nil
+    end
+
+    def stop
+    end
+
+    def compile(project_name, klass)
+      notify "Compiling because of #{klass} change", "#{project_name} file change detected", :pending  # notify any interested listeners
+      do_shell(focused_command)
+    end
+
+    def run_focused_tests(project_name, klass)
+      run_test_class(klass)
     end
 
     def focused_command
