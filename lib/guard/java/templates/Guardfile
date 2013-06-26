@@ -1,9 +1,13 @@
+require 'guard/java_translator'
+
+### Basic java project
 guard :java,  :project_name   => 'My Java Project',
               :all_after_pass => false,                   # run the all_cli command if the specific test class passes (true/false)
               :focused_cli    => 'ant clean debug',       # (required) command-line to run before running a specific test class
               :all_cli        => 'ant package-and-test',  # (required) command-line to run that executes the "build and run all tests" concept
               :classpath      => './bin/classes.jar:./libs/*:/usr/share/java/junit.jar' # (required) don't forget junit and your own jars here
-            # :all_on_start   => true                     # run all on startup of guard
+            # :all_on_start   => true,                    # run all on startup of guard
+            # :focused_after_compile => false,            # turns off running a focused test after compiling
             # test_runner_class => 'org.junit.runner.JUnitCore' # just in case you're using junit 3 or something other than 4
   do
 
@@ -14,5 +18,26 @@ guard :java,  :project_name   => 'My Java Project',
      ::Guard::JavaTranslator.filename_to_classname(test_filename)
    } # when source files change, run the test for that file
 
-  # ignore(path) will ignore files that change automatically, such as generated code filesjt
+  # ignore(path) will ignore files that change automatically, such as generated code files
 end
+
+
+### Android project
+def android_sdk_dir
+  sdk_dir = ''
+  %w{project.properties local.properties}.each do |prop_file|
+    File.open(File.join(File.dirname(__FILE__), prop_file)).each do |line|
+      sdk_dir = line[8..-1] if line[0..7] == 'sdk.dir='
+    end
+  end
+
+  sdk_dir.strip
+end
+
+guard :java,  :project_name   => 'My Java Project',
+              :all_on_start   => false,
+              :all_after_pass => false,
+              :focused_after_compile => false,
+              :focused_cli    => 'ant guard-debug',
+              :all_cli        => '(cd ./tests; ant clean debug && ant installt test)', # surrounding in parens launches a sub-session so the cd doesn't impact this session
+              :classpath      => "./bin/classes.jar:./libs/*:/usr/share/java/junit.jar:#{android_sdk_dir}/platforms/android-10/*" do
