@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'guard', '>= 1.1'
   s.add_dependency 'rspec', '~> 2.11'
+  s.add_dependency 'guard-compat', '~> 1.1'
 
   s.add_development_dependency 'bundler', '~> 1.1'
 

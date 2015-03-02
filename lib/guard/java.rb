@@ -1,8 +1,9 @@
-require 'guard/guard'
+require 'guard/compat/plugin'
 
-module ::Guard
-  class Java < ::Guard::Guard
-    def initialize(watchers=[], options={})
+module Guard
+  class Java < Plugin 
+
+   def initialize(options={})
       super
       @options = {
         :all_after_pass          => true,
@@ -49,9 +50,6 @@ module ::Guard
       nil
     end
 
-    def stop
-    end
-
     def compile(project_name, klass)
       notify "Compiling because of #{klass} change", "#{project_name} file change detected", :pending  # notify any interested listeners
       do_shell(focused_command)
@@ -84,13 +82,12 @@ module ::Guard
       (code == 0) ? :success : :failed
     end
 
-
     def run_test_class(klass)
       test_command = "java -cp #{options[:classpath]} #{options[:test_runner_class]} #{klass}"
       puts test_command
       do_shell test_command
     end
-  end
 
+  end
 end
 
