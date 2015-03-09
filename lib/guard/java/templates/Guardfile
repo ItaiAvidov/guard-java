@@ -1,14 +1,14 @@
 require 'guard/java_translator'
 
 ### Basic java project
-guard :java, {:project_name   => 'My Java Project',
-              :all_after_pass => false,                   # run the all_cli command if the specific test class passes (true/false)
-              :focused_cli    => 'ant clean debug',       # (required) command-line to run before running a specific test class
-              :all_cli        => 'ant package-and-test',  # (required) command-line to run that executes the "build and run all tests" concept
-              :classpath      => './bin/classes.jar:./libs/*:/usr/share/java/junit.jar' # (required) don't forget junit and your own jars here
-            # :all_on_start   => true,                    # run all on startup of guard
-            # :focused_after_compile => false,            # turns off running a focused test after compiling
-            # test_runner_class => 'org.junit.runner.JUnitCore' # just in case you're using junit 3 or something other than 4
+guard :java, {project_name:                'My Java Project',
+              all_after_pass:              false,                   # run the all_cli command if the specific test class passes (true/false)
+              focused_compile_cli_command: 'ant clean debug',       # (required) command-line to run before running a specific test class
+              all_compile_cli_command:     'ant package-and-test',  # (required) command-line to run that executes the "build and run all tests" concept
+              classpath: './bin/classes.jar:./libs/*:/usr/share/java/junit.jar', # (required) don't forget junit and your own jars here
+              # all_on_start:                true,                    # run all on startup of guard
+              # focused_after_compile:       false,                   # turns off running a focused test after compiling
+              # test_runner_class:           'org.junit.runner.JUnitCore' # just in case you're using junit 3 or something other than 4
   }do
 
   watch (%r{^src/test/java/*/(.+)\.java$}) { |m| ::Guard::JavaTranslator.filename_to_classname(m[0], 'src/test/java/') }  # test file changes
